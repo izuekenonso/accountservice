@@ -1,7 +1,5 @@
 package com.example.accountservice.service;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +16,7 @@ public class AccountServiceImpl implements AccountService {
 	
 	private Account account;
 	
-	private List<Account> accountList = new ArrayList<Account>();
+	private AccountDto accountDto;
 	
 	@Autowired
 	AccountRepository accountRepository;
@@ -65,7 +63,9 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	private double debitOps(Payment payment) {
-		account = findAccount(payment.getDebitAccount());
+		
+		accountDto = findAccount(payment.getDebitAccount());
+		account = AccountMapper.dtoToAccount(accountDto);
 		double debit = account.getBalance() - payment.getAmount();
 		
 		Account result = accountRepository.findByAccountNumber(payment.getDebitAccount());
@@ -76,7 +76,10 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	private double creditOps(Payment payment) {
-		account = findAccount(payment.getCreditAccount());
+		
+		accountDto = findAccount(payment.getCreditAccount());
+		account = AccountMapper.dtoToAccount(accountDto);
+		
 		double credit = account.getBalance() + payment.getAmount();
 		
 		Account result = accountRepository.findByAccountNumber(payment.getCreditAccount());
@@ -89,17 +92,17 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public Account getAccountBalance(String accountNumber) {
 		
-		account = findAccount(accountNumber);
-		
+		accountDto = findAccount(accountNumber);
+		account = AccountMapper.dtoToAccount(accountDto);
 		return account;
 	}
 
 	@Override
-	public Account findAccount(String accountNumber) {
+	public AccountDto findAccount(String accountNumber) {
 		
 		account = accountRepository.findByAccountNumber(accountNumber);
-		
-		return account;
+		accountDto = AccountMapper.accountToDto(account);
+		return accountDto;
 	}
 
 }

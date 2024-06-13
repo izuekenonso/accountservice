@@ -10,6 +10,6 @@ public interface AccountService {
 	AccountDto create(AccountDto accountDto);
 	void updateAccountBalance(Payment payment, ArithmeticOperation ops);
 	Account getAccountBalance(String accountNumber);
-	Account findAccount(String accountNumber);
+	AccountDto findAccount(String accountNumber);
 	
 }
